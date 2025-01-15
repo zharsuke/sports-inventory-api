@@ -33,5 +33,7 @@ router.get('/users/:id', verifyAdmin, userController.show);
 router.put('/users/:id', verifyAdmin, userController.update);
 // delete user by id
 router.delete('/users/:id', verifyAdmin, userController.destroy);
+// bulk store users
+router.post('/users/bulkStore', verifyAdmin, userController.bulkStore);
 
 module.exports = router;
