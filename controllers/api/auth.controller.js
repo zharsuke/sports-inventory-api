@@ -65,5 +65,39 @@ module.exports = {
         } catch (err) {
             return res.status(500).json({ message: err.message });
         }
+    },
+    register: async (req, res) => {
+        try {
+            const { username, email, password } = req.body;
+
+            const schema = {
+                username: 'string',
+                email: 'email',
+                password: 'string'
+            }
+
+            const validate = v.validate(req.body, schema);
+
+            if (validate.length) {
+                return res.status(400).json({
+                    status: 'error',
+                    message: validate
+                });
+            }
+
+            const user = await users.create({
+                username: username,
+                email: email,
+                password: bcrypt.hashSync(password, 8),
+                role: 'borrower'
+            });
+
+            return res.status(201).json({
+                status: 'success',
+                data: user
+            });
+        } catch (err) {
+            return res.status(500).json({ message: err.message });
+        }
     }
 }
