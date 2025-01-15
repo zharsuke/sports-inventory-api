@@ -30,7 +30,15 @@ module.exports = {
         role: 'borrower',
         createdAt: new Date(),
         updatedAt: new Date()
-      }
+      },
+      ...Array.from({ length: 50 }, (_, i) => ({
+        username: `borrower${i + 1}`,
+        email: `borrower${i + 1}@gmail.com`,
+        password: bcrypt.hashSync(`borrower${i + 1}`, 8),
+        role: 'borrower',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })),
     ], {});
   },
 

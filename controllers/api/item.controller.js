@@ -6,9 +6,16 @@ var bcrypt = require('bcryptjs');
 module.exports = {
     index: async (req, res) => {
         try {
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 10;
+            const offset = (page - 1) * limit;
+
             const response = await items.findAll({
-                attributes: ['id', 'name', 'amount', 'createdAt', 'updatedAt']
+                limit: limit,
+                offset: offset,
+                attributes: ['id', 'name', 'amount', 'createdAt', 'updatedAt'],
             });
+
             return res.status(200).json(response);
         } catch (err) {
             return res.status(500).json({ message: err.message });
@@ -97,6 +104,34 @@ module.exports = {
             return res.status(200).json({ message: "Data was deleted!" });
         } catch (err) {
             return req.status(500).json({ message: err.message });
+        }
+    },
+    bulkStore: async (req, res) => {
+        try {
+            const schema = {
+                items: {
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        props: {
+                            name: 'string',
+                            amount: 'number',
+                        }
+                    }
+                }
+            }
+
+            const validate = v.validate(req.body, schema);
+
+            if (validate.length) {
+                return res.status(400).json(validate);
+            }
+
+            await items.bulkCreate(req.body.items);
+
+            return res.status(201).json({ message: 'Data was inserted!' });
+        } catch (err) {
+            return res.status(500).json({ message: err.message });
         }
     }
 }

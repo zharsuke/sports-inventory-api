@@ -20,6 +20,8 @@ router.get('/items/:id', verifyAccess, itemController.show);
 router.put('/items/:id', verifyAdmin, itemController.update);
 // delete item by id
 router.delete('/items/:id', verifyAdmin, itemController.destroy);
+// bulk store items
+router.post('/items/bulkStore', verifyAdmin, itemController.bulkStore);
 
 // get all users
 router.get('/users/', verifyAdmin, userController.index);

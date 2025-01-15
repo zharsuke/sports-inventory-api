@@ -27,7 +27,13 @@ module.exports = {
         amount: 250,
         createdAt: new Date(),
         updatedAt: new Date()
-      }
+      },
+      ...Array.from({ length: 50 }, (_, i) => ({
+        name: `Item ${i + 1}`,
+        amount: Math.floor(Math.random() * 300) + 50, // Amount between 50 and 350
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })),
     ], {});
   },
 
