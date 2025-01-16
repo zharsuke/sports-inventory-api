@@ -11,7 +11,7 @@ module.exports = {
         field: 'id'
       },
       message: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false,
         field: 'message'
       },
@@ -26,17 +26,17 @@ module.exports = {
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
         field: 'timestamp'
       },
-      createdAt: {
+      created_at: {
         type: Sequelize.DATE,
         allowNull: false,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
-        field: 'createdAt'
+        field: 'created_at'
       },
-      updatedAt: {
+      updated_at: {
         type: Sequelize.DATE,
         allowNull: false,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
-        field: 'updatedAt'
+        field: 'updated_at'
       }
     });
   },

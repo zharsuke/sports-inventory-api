@@ -13,7 +13,7 @@ module.exports = {
             const response = await loans.findAll({
                 limit: limit,
                 offset: offset,
-                attributes: ['id', 'itemId', 'userId', 'amountLoan', 'status', 'loanDate', 'returnDate', 'createdAt', 'updatedAt'],
+                attributes: ['id', 'itemId', 'userId', 'amountLoan', 'status', 'loanDate', 'returnDate'],
                 include: [
                     {
                         model: users,
@@ -46,6 +46,18 @@ module.exports = {
                 return res.status(400).json(validate);
             }
 
+            // Find the item
+            const item = await items.findByPk(req.body.itemId);
+            if (!item) {
+                return res.status(404).json({ message: 'Item not found' });
+            }
+
+            // Check if there is enough amount to loan
+            if (item.amount < req.body.amountLoan) {
+                return res.status(400).json({ message: 'Not enough items in stock' });
+            }
+
+            // Create the loan
             const loan = await loans.create({
                 itemId: req.body.itemId,
                 userId: req.userId, // Set userId to the logged-in user
@@ -54,6 +66,10 @@ module.exports = {
                 loanDate: new Date(),
                 returnDate: null
             });
+
+            // Decrement the item amount
+            item.amount -= req.body.amountLoan;
+            await item.save();
 
             await logger.info(`Loan created: ${JSON.stringify(loan)}`);
             return res.status(201).json({ message: 'Data was inserted!' });
@@ -66,7 +82,7 @@ module.exports = {
         try {
             const id = req.params.id;
             const response = await loans.findByPk(id, {
-                attributes: ['id', 'itemId', 'userId', 'amountLoan', 'status', 'loanDate', 'returnDate', 'createdAt', 'updatedAt'],
+                attributes: ['id', 'itemId', 'userId', 'amountLoan', 'status', 'loanDate', 'returnDate'],
                 include: [
                     {
                         model: users,

@@ -20,6 +20,11 @@ module.exports = (sequelize, DataTypes) => {
             unique: true,
             field: 'amount',
         },
+        filePath: {
+            type: DataTypes.STRING,
+            allowNull: true,
+            field: 'filePath'
+        },
         createdAt: {
             type: DataTypes.DATE,
             allowNull: false,

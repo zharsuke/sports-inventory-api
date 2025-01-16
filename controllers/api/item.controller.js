@@ -13,7 +13,7 @@ module.exports = {
             const response = await items.findAll({
                 limit: limit,
                 offset: offset,
-                attributes: ['id', 'name', 'amount', 'createdAt', 'updatedAt'],
+                attributes: ['id', 'name', 'amount', 'filePath', 'createdAt', 'updatedAt'],
             });
 
             return res.status(200).json(response);
@@ -22,27 +22,39 @@ module.exports = {
         }
     },
     store: async (req, res) => {
-        try {
-            const schema = {
-                name: 'string',
-                amount: 'number',
+        upload(req, res, async (err) => {
+            if (err) {
+                return res.status(400).json({ message: err });
             }
 
-            const validate = v.validate(req.body, schema);
+            try {
+                const schema = {
+                    name: 'string',
+                    amount: 'number',
+                }
 
-            if (validate.length) {
-                return res.status(400).json(validate);
+                const validate = v.validate(req.body, schema);
+
+                if (validate.length) {
+                    return res.status(400).json(validate);
+                }
+
+                const newItem = {
+                    name: req.body.name,
+                    amount: req.body.amount,
+                };
+
+                if (req.file) {
+                    newItem.filePath = req.file.path;
+                }
+
+                await items.create(newItem);
+
+                return res.status(201).json({ message: 'Data was inserted!' });
+            } catch (err) {
+                return res.status(500).json({ message: err.message });
             }
-
-            await items.create({
-                name: req.body.name,
-                amount: req.body.amount,
-            });
-
-            return res.status(201).json({ message: 'Data was inserted!' });
-        } catch (err) {
-            return res.status(500).json({ message: err.message });
-        }
+        });
     },
     uploadFile: async (req, res) => {
         try {
@@ -67,37 +79,49 @@ module.exports = {
         }
     },
     update: async (req, res) => {
-        try {
-            const id = req.params.id;
-
-            let data = await items.findByPk(id, {
-                attributes: ['id', 'name', 'amount', 'createdAt', 'updatedAt']
-            });
-
-            if (!data) {
-                return res.json({ message: 'Data not Found!' });
+        upload(req, res, async (err) => {
+            if (err) {
+                return res.status(400).json({ message: err });
             }
 
-            const schema = {
-                name: 'string|optional',
-                amount: 'number|optional',
+            try {
+                const id = req.params.id;
+
+                let data = await items.findByPk(id, {
+                    attributes: ['id', 'name', 'amount', 'createdAt', 'updatedAt']
+                });
+
+                if (!data) {
+                    return res.json({ message: 'Data not Found!' });
+                }
+
+                const schema = {
+                    name: 'string|optional',
+                    amount: 'number|optional',
+                }
+
+                const validate = v.validate(req.body, schema);
+
+                if (validate.length) {
+                    return res.status(400).json(validate);
+                }
+
+                const updatedItem = {
+                    name: req.body.name,
+                    amount: req.body.amount,
+                };
+
+                if (req.file) {
+                    updatedItem.filePath = req.file.path;
+                }
+
+                const response = await data.update(updatedItem);
+
+                return res.status(200).json(response);
+            } catch (err) {
+                return res.status(500).json({ message: err.message });
             }
-
-            const validate = v.validate(req.body, schema);
-
-            if (validate.length) {
-                return res.status(400).json(validate)
-            }
-
-            const response = await data.update({
-                name: req.body.name,
-                amount: req.body.amount,
-            });
-
-            return res.status(200).json(response);
-        } catch (err) {
-            return res.status(500).json({ message: err.message });
-        }
+        });
     },
     destroy: async (req, res) => {
         try {

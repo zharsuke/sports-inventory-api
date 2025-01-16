@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'id'
         },
         message: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             allowNull: false,
             field: 'message'
         },
@@ -23,17 +23,17 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: DataTypes.NOW,
             field: 'timestamp'
         },
-        createdAt: {
+        created_at: {
             type: DataTypes.DATE,
             allowNull: false,
             defaultValue: DataTypes.NOW,
-            field: 'createdAt'
+            field: 'created_at'
         },
-        updatedAt: {
+        updated_at: {
             type: DataTypes.DATE,
             allowNull: false,
             defaultValue: DataTypes.NOW,
-            field: 'updatedAt'
+            field: 'updated_at'
         }
     }, {
         tableName: 'logs',
