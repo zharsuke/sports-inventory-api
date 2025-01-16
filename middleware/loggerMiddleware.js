@@ -1,30 +1,30 @@
-const { createLogger, format, transports } = require('winston');
-const { combine, timestamp, printf } = format;
+const fs = require('fs');
+const path = require('path');
 const { logs } = require('../models');
 
-const logFormat = printf(({ level, message, timestamp }) => {
-    return `${timestamp} ${level}: ${message}`;
-});
+const logFilePath = path.join(__dirname, '../logs/loan_transactions.log');
 
-const logger = createLogger({
-    level: 'info',
-    format: combine(
-        timestamp(),
-        logFormat
-    ),
-    transports: [
-        new transports.Console(),
-        new transports.File({ filename: 'logs/loan_transactions.log' }),
-        new transports.Stream({
-            stream: {
-                write: async (message) => {
-                    const [timestamp, level, ...msgParts] = message.split(' ');
-                    const msg = msgParts.join(' ');
-                    await logs.create({ message: msg.trim(), level, timestamp: new Date(timestamp) });
-                }
-            }
-        })
-    ]
-});
+const logToFile = (message) => {
+    fs.appendFileSync(logFilePath, message + '\n', 'utf8');
+};
+
+const logToDatabase = async (message, level, timestamp) => {
+    await logs.create({ message, level, timestamp });
+};
+
+const logger = {
+    info: async (message) => {
+        const timestamp = new Date().toISOString();
+        const logMessage = `${timestamp} info: ${message}`;
+        logToFile(logMessage);
+        await logToDatabase(message, 'info', timestamp);
+    },
+    error: async (message) => {
+        const timestamp = new Date().toISOString();
+        const logMessage = `${timestamp} error: ${message}`;
+        logToFile(logMessage);
+        await logToDatabase(message, 'error', timestamp);
+    }
+};
 
 module.exports = logger;

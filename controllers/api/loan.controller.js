@@ -1,7 +1,7 @@
 const Validator = require('fastest-validator');
 const { loans, users, items } = require('./../../models/');
 const v = new Validator();
-const logger = require('../../middleware/logger');
+const logger = require('../../middleware/loggerMiddleware');
 
 module.exports = {
     index: async (req, res) => {
@@ -26,10 +26,10 @@ module.exports = {
                 ]
             });
 
-            logger.info(`Loans retrieved: ${JSON.stringify(response)}`);
+            await logger.info(`Loans retrieved: ${JSON.stringify(response)}`);
             return res.status(200).json(response);
         } catch (err) {
-            logger.error(`Loan retrieval failed: ${err.message}`);
+            await logger.error(`Loan retrieval failed: ${err.message}`);
             return res.status(500).json({ message: err.message });
         }
     },
@@ -55,10 +55,10 @@ module.exports = {
                 returnDate: null
             });
 
-            logger.info(`Loan created: ${JSON.stringify(loan)}`);
+            await logger.info(`Loan created: ${JSON.stringify(loan)}`);
             return res.status(201).json({ message: 'Data was inserted!' });
         } catch (err) {
-            logger.error(`Loan creation failed: ${err.message}`);
+            await logger.error(`Loan creation failed: ${err.message}`);
             return res.status(500).json({ message: err.message });
         }
     },
@@ -79,10 +79,10 @@ module.exports = {
                 ]
             });
 
-            logger.info(`Loan retrieved: ${JSON.stringify(response)}`);
+            await logger.info(`Loan retrieved: ${JSON.stringify(response)}`);
             return res.status(200).json(response || {});
         } catch (err) {
-            logger.error(`Loan retrieval failed: ${err.message}`);
+            await logger.error(`Loan retrieval failed: ${err.message}`);
             return res.status(500).json({ message: err.message });
         }
     },
@@ -107,10 +107,10 @@ module.exports = {
                 }
             });
 
-            logger.info(`Loan updated: ${JSON.stringify(loan)}`);
+            await logger.info(`Loan updated: ${JSON.stringify(loan)}`);
             return res.status(200).json({ message: 'Data was updated!' });
         } catch (err) {
-            logger.error(`Loan update failed: ${err.message}`);
+            await logger.error(`Loan update failed: ${err.message}`);
             return res.status(500).json({ message: err.message });
         }
     }
