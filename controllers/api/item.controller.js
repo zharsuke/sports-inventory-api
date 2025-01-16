@@ -44,6 +44,16 @@ module.exports = {
             return res.status(500).json({ message: err.message });
         }
     },
+    uploadFile: async (req, res) => {
+        try {
+            if (!req.file) {
+                return res.status(400).json({ message: 'No file uploaded' });
+            }
+            return res.status(200).json({ message: 'File uploaded successfully', file: req.file });
+        } catch (err) {
+            return res.status(500).json({ message: err.message });
+        }
+    },
     show: async (req, res) => {
         try {
             const id = req.params.id;

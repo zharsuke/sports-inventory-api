@@ -1,9 +1,11 @@
-var expresss = require('express');
-var router = expresss.Router();
+var express = require('express');
+var router = express.Router();
 const authController = require('../controllers/api/auth.controller');
 const itemController = require('../controllers/api/item.controller');
 const userController = require('../controllers/api/user.controller');
+const loanController = require('../controllers/api/loan.controller');
 const { verifyAdmin, verifyAccess } = require('./../middleware/authMiddleware');
+const upload = require('../middleware/uploadMiddleware');
 
 // login
 router.post('/login/', authController.login);
@@ -23,6 +25,9 @@ router.delete('/items/:id', verifyAdmin, itemController.destroy);
 // bulk store items
 router.post('/items/bulkStore', verifyAdmin, itemController.bulkStore);
 
+// upload item file
+router.post('/items/upload', verifyAdmin, upload, itemController.uploadFile);
+
 // get all users
 router.get('/users/', verifyAdmin, userController.index);
 // create new user
@@ -35,5 +40,14 @@ router.put('/users/:id', verifyAdmin, userController.update);
 router.delete('/users/:id', verifyAdmin, userController.destroy);
 // bulk store users
 router.post('/users/bulkStore', verifyAdmin, userController.bulkStore);
+
+// get all loans
+router.get('/loans/', verifyAccess, loanController.index);
+// create new loan
+router.post('/loans/', verifyAccess, loanController.store);
+// get loan by id
+router.get('/loans/:id', verifyAccess, loanController.show);
+// update loan by id
+router.put('/loans/:id', verifyAccess, loanController.update);
 
 module.exports = router;

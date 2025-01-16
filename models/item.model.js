@@ -37,5 +37,9 @@ module.exports = (sequelize, DataTypes) => {
         underscored: true,
     });
 
+    items.associate = function (models) {
+        items.hasMany(models.loans, { foreignKey: 'itemId' });
+    };
+
     return items;
 }
