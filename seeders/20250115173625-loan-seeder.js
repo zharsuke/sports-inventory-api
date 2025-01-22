@@ -20,7 +20,7 @@ module.exports = {
         amountLoan: 1,
         status: 'pending',
         loanDate: new Date(),
-        returnDate: null
+        returnDate: new Date(),
       },
       {
         userId: 2,
@@ -28,7 +28,7 @@ module.exports = {
         amountLoan: 1,
         status: 'borrowed',
         loanDate: new Date(),
-        returnDate: null
+        returnDate: new Date(),
       },
       {
         userId: 3,
@@ -44,7 +44,7 @@ module.exports = {
         amountLoan: Math.floor(Math.random() * 5) + 1, // Amount between 1 and 5
         status: 'pending',
         loanDate: new Date(),
-        returnDate: null,
+        returnDate: new Date(),
       })),
     ], {});
   },

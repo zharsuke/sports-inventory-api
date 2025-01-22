@@ -44,9 +44,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         loanDate: {
             type: DataTypes.DATE,
-            allowNull: false,
+            allowNull: true,
             field: 'loanDate',
-            defaultValue: DataTypes.NOW,
+            defaultValue: null,
         },
         returnDate: {
             type: DataTypes.DATE,
