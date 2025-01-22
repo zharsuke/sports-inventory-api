@@ -42,12 +42,14 @@ router.delete('/users/:id', verifyAdmin, userController.destroy);
 router.post('/users/bulkStore', verifyAdmin, userController.bulkStore);
 
 // get all loans
-router.get('/loans/', verifyAccess, loanController.index);
+router.get('/loans/', verifyAdmin, loanController.index);
 // create new loan
 router.post('/loans/', verifyAccess, loanController.store);
 // get loan by id
 router.get('/loans/:id', verifyAccess, loanController.show);
 // update loan by id
-router.put('/loans/:id', verifyAccess, loanController.update);
+router.put('/loans/:id', verifyAdmin, loanController.update);
+// get loans by current user
+router.get('/loan/currentUser', verifyAccess, loanController.getLoansByCurrentUser);
 
 module.exports = router;

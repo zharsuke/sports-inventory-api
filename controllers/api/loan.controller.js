@@ -129,5 +129,33 @@ module.exports = {
             await logger.error(`Loan update failed: ${err.message}`);
             return res.status(500).json({ message: err.message });
         }
+    },
+    getLoansByCurrentUser: async (req, res) => {
+        try {
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 10;
+            const offset = (page - 1) * limit;
+    
+            const response = await loans.findAll({
+                limit: limit,
+                offset: offset,
+                attributes: ['id', 'itemId', 'userId', 'amountLoan', 'status', 'loanDate', 'returnDate'],
+                include: [
+                    {
+                        model: items,
+                        attributes: ['id', 'name']
+                    }
+                ],
+                where: {
+                    userId: req.userId
+                }
+            });
+    
+            await logger.info(`Loans retrieved: ${JSON.stringify(response)}`);
+            return res.status(200).json(response);
+        } catch (err) {
+            await logger.error(`Loan retrieval failed: ${err.message}`);
+            return res.status(500).json({ message: err.message });
+        }
     }
 }
