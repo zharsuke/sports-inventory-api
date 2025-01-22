@@ -60,6 +60,7 @@ module.exports = {
                 id: user.id,
                 username: user.username,
                 email: user.email,
+                role: user.role,
                 accessToken: accessToken
             })
         } catch (err) {
